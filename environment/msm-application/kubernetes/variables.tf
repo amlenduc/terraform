@@ -1,0 +1,3 @@
+variable "kubernetes" {
+  type = "map"
+}
