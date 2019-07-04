@@ -1,14 +1,13 @@
-# Use the light version of the image that contains just the latest binary
-FROM hashicorp/terraform:light
+FROM ubuntu:18.04
 
-# The app folder will contain all our files
-WORKDIR /app
+ARG TERRAFORM_VERSION=0.12.2
 
-# Put all your configration files in the same folder as the Dockerfile
-COPY . /app
+RUN apt-get update \
+ && apt-get install -y wget unzip \
+ && rm -rf /var/lib/apt/lists/*
 
-# Initalize terraform with local settings and data
-RUN ["terraform", "init"]
-
-# Plan and execute the configurations
-CMD [ "apply"]
+RUN echo "===> Installing Terraform ${TERRAFORM_VERSION}..." \
+ && wget https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip \
+ &&	unzip terraform_${TERRAFORM_VERSION}_linux_amd64.zip \
+ && mv terraform /usr/local/bin/terraform \
+ && rm terraform_${TERRAFORM_VERSION}_linux_amd64.zip
